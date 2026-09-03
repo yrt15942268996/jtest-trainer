@@ -685,47 +685,66 @@ if(window.speechSynthesis){
 }
 
 function testVoice(){
+  var msg='';
   if(!window.speechSynthesis){
-    alert('浏览器不支持语音合成（SpeechSynthesis API不可用）');
-    return;
+    msg='浏览器不支持语音合成\n将使用云端TTS播放日语\n\n点击确定测试...';
+  }else{
+    var voices=window.speechSynthesis.getVoices();
+    var jaVoices=voices.filter(function(v){return v.lang.indexOf('ja')===0;});
+    msg+='总语音数：'+voices.length+'\n';
+    msg+='日语语音数：'+jaVoices.length+'\n';
+    if(jaVoices.length>0){
+      msg+='\n日语语音列表：\n';
+      jaVoices.forEach(function(v){msg+='・'+v.name+' ('+v.lang+')\n';});
+      msg+='\n将使用本地日语语音播放';
+    }else{
+      msg+='\n设备没有日语语音\n将使用云端TTS播放';
+    }
+    msg+='\n\n点击确定测试播放...';
   }
-  var voices=window.speechSynthesis.getVoices();
-  var jaVoices=voices.filter(function(v){return v.lang.indexOf('ja')===0;});
-  var msg='语音引擎：'+(window.speechSynthesis?'可用':'不可用')+'\n';
-  msg+='总语音数：'+voices.length+'\n';
-  msg+='日语语音数：'+jaVoices.length+'\n';
-  if(jaVoices.length>0){
-    msg+='\n日语语音列表：\n';
-    jaVoices.forEach(function(v){msg+='・'+v.name+' ('+v.lang+')\n';});
-  }
-  msg+='\n点击「确定」测试播放日语...';
   alert(msg);
-  // 尝试播放
   speakJa('こんにちは。テストです。');
 }
 
 function speakJa(text){
-  try{
-    if(!window.speechSynthesis){
-      alert('このブラウザは音声合成に対応していません。\n（此浏览器不支持语音合成）');
+  if(!text)return;
+
+  // 方式1：有日语语音 → 用Web Speech API
+  if(window.speechSynthesis && _jaVoice){
+    try{
+      window.speechSynthesis.cancel();
+      var u=new SpeechSynthesisUtterance(text);
+      u.voice=_jaVoice;
+      u.lang='ja-JP';u.rate=0.9;u.pitch=1.0;u.volume=1.0;
+      window.speechSynthesis.speak(u);
       return;
-    }
-    window.speechSynthesis.cancel();
-    var u=new SpeechSynthesisUtterance(text);
-    u.lang='ja-JP';u.rate=0.9;u.pitch=1.0;u.volume=1.0;
-    if(_jaVoice){u.voice=_jaVoice;}
-    else if(!_voicesReady){
-      // voices还没加载完，再试一次
-      loadJaVoice();
-      if(_jaVoice){u.voice=_jaVoice;}
-    }
-    u.onerror=function(e){
-      console.log('speech error:',e);
-    };
-    window.speechSynthesis.speak(u);
-  }catch(e){
-    alert('音声再生エラー：'+e.message);
+    }catch(e){}
   }
+
+  // 没有日语语音 → 用云端TTS
+  speakJaCloud(text);
+}
+
+function speakJaCloud(text){
+  // 尝试 Google Translate TTS（通过 Audio 元素，不受 CORS 限制）
+  var url='https://translate.google.com/translate_tts?ie=UTF-8&q='+encodeURIComponent(text)+'&tl=ja&client=tw-ob';
+  var audio=new Audio(url);
+
+  audio.oncanplay=function(){
+    audio.play().catch(function(){});
+  };
+  audio.onerror=function(){
+    // Google 被墙？试试备用方案
+    var url2='https://fanyi.baidu.com/gettts?lan=ja&text='+encodeURIComponent(text)+'&spd=3&source=web';
+    var audio2=new Audio(url2);
+    audio2.oncanplay=function(){audio2.play().catch(function(){});};
+    audio2.onerror=function(){
+      // 都不行，提示用户
+      alert('设备没有日语语音包，且云端TTS无法访问。\n\n请安装日语语音：\niPhone：设置→通用→键盘→添加日文键盘\n安卓：设置→语言→文字转语音→安装日语语音');
+    };
+    audio2.load();
+  };
+  audio.load();
 }
 
 function navCard(type,dir){
