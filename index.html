@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>J.TEST 特A 每日训练台</title>
+<style>
+:root{--bg:#0d0f14;--card:#181b24;--card2:#1e2230;--accent:#e8b842;--teal:#4ecdc4;--red:#ff6b6b;--green:#4caf50;--purple:#bb8fce;--text:#e8e8e8;--dim:#7a7d8a;--faint:#4a4d5a;--border:#262a38;--radius:14px}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.65;font-size:15px;overflow-x:hidden}
+.wrap{max-width:680px;margin:0 auto;padding:12px}
+.hd{background:linear-gradient(135deg,#181b24,#222838);border-radius:var(--radius);padding:20px;border:1px solid var(--border);margin-bottom:14px}
+.hd h1{font-size:20px;font-weight:700;color:var(--accent);letter-spacing:.5px}
+.hd .sub{color:var(--dim);font-size:12px;margin-top:6px}
+.badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.bg{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.bg.g{background:rgba(78,205,196,.12);color:var(--teal);border:1px solid rgba(78,205,196,.2)}
+.bg.y{background:rgba(232,184,66,.12);color:var(--accent);border:1px solid rgba(232,184,66,.2)}
+.bg.r{background:rgba(255,107,107,.12);color:var(--red);border:1px solid rgba(255,107,107,.2)}
+.prog{background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);margin-bottom:14px}
+.prog-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
+.prog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));border-radius:3px;transition:width .4s;width:0}
+.mod{background:var(--card);border-radius:var(--radius);margin-bottom:12px;border:1px solid var(--border);overflow:hidden}
+.mod-h{padding:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mod-h-l{display:flex;align-items:center;gap:12px}
+.mod-n{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0}
+.m1{background:rgba(232,184,66,.15);color:var(--accent)}
+.m2{background:rgba(78,205,196,.15);color:var(--teal)}
+.m3{background:rgba(255,107,107,.15);color:var(--red)}
+.m4{background:rgba(76,175,80,.15);color:var(--green)}
+.m5{background:rgba(155,89,182,.15);color:var(--purple)}
+.mod-t{font-size:15px;font-weight:600}
+.mod-d{font-size:11px;color:var(--dim);margin-top:2px}
+.mod-time{font-size:11px;color:var(--dim);background:var(--bg);padding:3px 10px;border-radius:20px;white-space:nowrap}
+.mod-body{display:none;padding:0 16px 16px}
+.mod-body.open{display:block}
+.chev{color:var(--dim);font-size:11px;transition:transform .3s}
+.chev.open{transform:rotate(180deg)}
+.stitle{font-size:13px;font-weight:600;color:var(--accent);margin:14px 0 8px;padding-left:10px;border-left:3px solid var(--accent)}
+.stitle.teal{color:var(--teal);border-color:var(--teal)}
+.stitle.red{color:var(--red);border-color:var(--red)}
+.stitle.green{color:var(--green);border-color:var(--green)}
+.stitle.purple{color:var(--purple);border-color:var(--purple)}
+.tabs{display:flex;gap:4px;margin:8px 0 12px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:7px 14px;border-radius:8px;background:var(--bg);cursor:pointer;font-size:12px;color:var(--dim);border:1px solid transparent;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.tab.on{background:rgba(232,184,66,.1);color:var(--accent);border-color:rgba(232,184,66,.2)}
+.tab:active{opacity:.7}
+.tcon{display:none}
+.tcon.on{display:block}
+.fc{background:var(--card2);border-radius:var(--radius);border:1px solid var(--border);min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .3s;position:relative;overflow:hidden}
+.fc:active{border-color:var(--accent)}
+.fc-front{font-size:24px;font-weight:700;text-align:center;color:var(--accent);line-height:1.5}
+.fc-back{display:none;text-align:center}
+.fc-back .jp{font-size:20px;font-weight:600;color:var(--text)}
+.fc-back .rd{font-size:14px;color:var(--teal);margin-top:6px}
+.fc-back .jdef{font-size:13px;color:var(--text);margin-top:10px;padding:8px 12px;background:rgba(0,0,0,.25);border-radius:8px;line-height:1.6}
+.fc-back .cn{font-size:12px;color:var(--dim);margin-top:6px}
+.fc-back .ex{font-size:12px;color:var(--text);margin-top:8px;padding:6px 10px;background:rgba(232,184,66,.06);border-radius:6px;line-height:1.6}
+.fc-back .exCn{font-size:11px;color:var(--dim);margin-top:4px}
+.fc-back .note{font-size:11px;color:var(--accent);margin-top:8px}
+.fc.flipped .fc-front{display:none}
+.fc.flipped .fc-back{display:block}
+.fc-tip{position:absolute;bottom:8px;right:12px;font-size:10px;color:var(--faint)}
+.fc-nav{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px}
+.fc-btn{flex:1;padding:12px;border-radius:10px;border:none;cursor:pointer;font-size:14px;font-weight:600;-webkit-tap-highlight-color:transparent;text-align:center}
+.fc-btn.prev{background:var(--border);color:var(--dim)}
+.fc-btn.next{background:rgba(232,184,66,.15);color:var(--accent)}
+.fc-btn:active{opacity:.7}
+.fc-count{font-size:12px;color:var(--dim);text-align:center;padding:0 8px;white-space:nowrap}
+.fc-known{background:rgba(76,175,80,.15);color:var(--green);border:1px solid rgba(76,175,80,.3);padding:10px 16px;border-radius:10px;font-size:12px;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent;width:100%}
+.fc-known:active{opacity:.7}
+.fc-known.done{background:rgba(76,175,80,.25)}
+.gc{background:var(--card2);border-radius:10px;border:1px solid var(--border);padding:14px;margin:8px 0}
+.gc .pat{font-size:16px;font-weight:700;color:var(--teal)}
+.gc .mean{font-size:13px;color:var(--dim);margin-top:4px}
+.gc .ex{font-size:13px;color:var(--text);margin-top:8px;padding:8px 10px;background:rgba(0,0,0,.2);border-radius:6px}
+.gc .note{font-size:12px;color:var(--accent);margin-top:6px}
+.q{background:var(--card2);border-radius:10px;border:1px solid var(--border);padding:14px;margin:10px 0}
+.q-text{font-size:14px;line-height:1.7;margin-bottom:10px}
+.q-text .speaker{color:var(--teal);font-weight:600}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{padding:12px 14px;border-radius:8px;background:rgba(0,0,0,.2);border:1px solid var(--border);cursor:pointer;font-size:13px;-webkit-tap-highlight-color:transparent;transition:all .2s;display:flex;align-items:flex-start;gap:8px}
+.q-opt:active{opacity:.7}
+.q-opt .lbl{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.q-opt.selected{border-color:var(--accent);background:rgba(232,184,66,.08)}
+.q-opt.selected .lbl{background:var(--accent);color:#000}
+.q-opt.correct{border-color:var(--green);background:rgba(76,175,80,.1)}
+.q-opt.correct .lbl{background:var(--green);color:#fff}
+.q-opt.wrong{border-color:var(--red);background:rgba(255,107,107,.1)}
+.q-opt.wrong .lbl{background:var(--red);color:#fff}
+.q-opt.disabled{pointer-events:none}
+.q-reveal{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;font-size:12px;line-height:1.6}
+.q-reveal.show{display:block}
+.q-reveal .ans{font-weight:700;margin-bottom:4px;color:var(--green)}
+.q-reveal .exp{color:var(--dim)}
+.q-btn{margin-top:10px;padding:10px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;width:100%;background:rgba(232,184,66,.15);color:var(--accent);-webkit-tap-highlight-color:transparent}
+.q-btn:active{opacity:.7}
+.chk{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.chk:last-child{border:none}
+.chk input{margin-top:3px;width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+.chk label{cursor:pointer;font-size:13px;flex:1;-webkit-tap-highlight-color:transparent}
+.chk input:checked+label{text-decoration:line-through;color:var(--faint)}
+.tip{background:rgba(78,205,196,.06);border:1px solid rgba(78,205,196,.15);border-radius:8px;padding:10px 12px;margin:8px 0;font-size:12px;color:var(--teal);line-height:1.6}
+.tip b{color:#fff}
+.hl{background:rgba(232,184,66,.1);padding:1px 5px;border-radius:3px;color:var(--accent)}
+.rule{background:linear-gradient(135deg,rgba(232,184,66,.05),rgba(78,205,196,.05));border-radius:10px;padding:14px;margin:8px 0;border:1px solid rgba(232,184,66,.12);display:flex;gap:12px}
+.rule-n{font-size:22px;font-weight:700;color:var(--accent);opacity:.4;flex-shrink:0}
+.rule-t{font-size:13px;line-height:1.6}
+.rule-t b{color:var(--accent)}
+.spd{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
+.spd-i{background:rgba(0,0,0,.2);border-radius:8px;padding:10px;text-align:center;border:1px solid var(--border)}
+.spd-i .t{font-size:18px;font-weight:700;color:var(--accent)}
+.spd-i .d{font-size:11px;color:var(--dim);margin-top:2px}
+.mock{background:linear-gradient(135deg,rgba(155,89,182,.08),rgba(232,184,66,.06));border-radius:var(--radius);padding:16px;border:1px solid rgba(155,89,182,.15);margin:8px 0}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:8px 0}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;min-width:400px}
+.tbl th{text-align:left;padding:7px 8px;background:rgba(255,255,255,.04);color:var(--dim);font-weight:500;font-size:11px;border-bottom:1px solid var(--border)}
+.tbl td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:top}
+.tmr{background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);margin-bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tmr-d{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--teal);letter-spacing:1px}
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;-webkit-tap-highlight-color:transparent}
+.btn:active{opacity:.7}
+.btn.go{background:var(--green);color:#fff}
+.btn.stop{background:var(--red);color:#fff}
+.btn.rs{background:var(--border);color:var(--dim)}
+.play-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;border:none;cursor:pointer;font-size:13px;font-weight:600;background:rgba(255,107,107,.15);color:var(--red);-webkit-tap-highlight-color:transparent;margin-bottom:10px}
+.play-btn:active{opacity:.7}
+.play-btn.playing{background:rgba(255,107,107,.3)}
+.passage{background:rgba(0,0,0,.2);border-radius:8px;padding:14px;font-size:13px;line-height:1.8;margin-bottom:10px;border:1px solid var(--border)}
+.vm-bar{display:flex;gap:6px;margin:10px 0;align-items:center;flex-wrap:wrap}
+.vm-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-size:12px;color:var(--dim);-webkit-tap-highlight-color:transparent}
+.vm-btn.on{background:rgba(232,184,66,.12);color:var(--accent);border-color:rgba(232,184,66,.25)}
+.vm-btn:active{opacity:.7}
+.vm-date{font-size:11px;color:var(--faint);margin-left:auto}
+.h-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.h-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;-webkit-tap-highlight-color:transparent}
+.h-item:active{opacity:.7}
+.h-item .h-date{font-size:14px;font-weight:600;color:var(--text)}
+.h-item .h-cnt{font-size:11px;color:var(--dim)}
+.h-back{margin-top:10px}
+@media(max-width:380px){.wrap{padding:8px}.hd h1{font-size:17px}.fc-front{font-size:20px}.fc-back .jp{font-size:17px}.mod-t{font-size:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hd">
+  <h1>J.TEST 特A 930+ 每日全科训练台</h1>
+  <div class="sub">每天2.5-3h 全科混练 直击特A提分点</div>
+  <div class="badges"><span class="bg y">现B级→目标特A930+</span><span class="bg g" id="dateBg"></span></div>
+</div>
+<div class="prog">
+  <div class="prog-row"><span>今日完成</span><span id="progTxt">0/13</span></div>
+  <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+</div>
+<div class="tmr">
+  <div class="tmr-d" id="tmrD">00:00:00</div>
+  <button class="btn go" id="tmrBtn" onclick="toggleTmr()">开始</button>
+  <button class="btn rs" onclick="resetTmr()">重置</button>
+  <span style="flex:1;text-align:right;font-size:11px;color:var(--dim)">目标2.5-3h</span>
+</div>
+
+<!-- Module 1 -->
+<div class="mod">
+  <div class="mod-h" onclick="toggleMod(1)">
+    <div class="mod-h-l"><div class="mod-n m1">1</div><div><div class="mod-t">词汇・惯用・汉字</div><div class="mod-d">翻卡片逐个过 80-100条/日</div></div></div>
+    <div style="display:flex;align-items:center;gap:8px"><span class="mod-time">30min</span><span class="chev" id="ch1">▼</span></div>
+  </div>
+  <div class="mod-body" id="mb1">
+    <div class="tabs" id="tab1"></div>
+    <div class="tcon on" id="tc1-1">
+      <div class="stitle">真题高频词汇</div>
+      <div class="vm-bar">
+        <button class="vm-btn on" id="vmToday" onclick="switchVocabMode('today')">今日30词</button>
+        <button class="vm-btn" id="vmHist" onclick="switchVocabMode('history')">历史词汇</button>
+        <span class="vm-date" id="vmDate"></span>
+      </div>
+      <div id="vocabTodayView">
+        <div class="fc" id="fc-vocab" onclick="flipCard('vocab')"><div class="fc-front" id="fc-vocab-front"></div><div class="fc-back" id="fc-vocab-back"></div><div class="fc-tip">点击翻面</div></div>
+        <div class="fc-nav"><button class="fc-btn prev" onclick="navCard('vocab',-1)">上一张</button><span class="fc-count" id="fc-vocab-count"></span><button class="fc-btn next" onclick="navCard('vocab',1)">下一张</button></div>
+        <div style="margin-top:8px"><button class="fc-known" id="fc-vocab-known" onclick="markKnown('vocab')">标记已掌握</button></div>
+      </div>
+      <div id="vocabHistView" style="display:none">
+        <div class="h-list" id="vocabHistList"></div>
+      </div>
+    </div>
+    <div class="tcon" id="tc1-2">
+      <div class="stitle teal">惯用句・ことわざ</div>
+      <div class="fc" id="fc-idiom" onclick="flipCard('idiom')"><div class="fc-front" id="fc-idiom-front"></div><div class="fc-back" id="fc-idiom-back"></div><div class="fc-tip">点击翻面</div></div>
+      <div class="fc-nav"><button class="fc-btn prev" onclick="navCard('idiom',-1)">上一张</button><span class="fc-count" id="fc-idiom-count"></span><button class="fc-btn next" onclick="navCard('idiom',1)">下一张</button></div>
+      <div style="margin-top:8px"><button class="fc-known" id="fc-idiom-known" onclick="markKnown('idiom')">标记已掌握</button></div>
+    </div>
+    <div class="tcon" id="tc1-3">
+      <div class="stitle red">多义汉字・音训读（坑点）</div>
+      <div class="fc" id="fc-kanji" onclick="flipCard('kanji')"><div class="fc-front" id="fc-kanji-front"></div><div class="fc-back" id="fc-kanji-back"></div><div class="fc-tip">点击翻面</div></div>
+      <div class="fc-nav"><button class="fc-btn prev" onclick="navCard('kanji',-1)">上一张</button><span class="fc-count" id="fc-kanji-count"></span><button class="fc-btn next" onclick="navCard('kanji',1)">下一张</button></div>
+      <div style="margin-top:8px"><button class="fc-known" id="fc-kanji-known" onclick="markKnown('kanji')">标记已掌握</button></div>
+      <div class="tip"><b>方法：</b>每天挑5个，先遮读音自己念再对照，重点记<span class="hl">特殊读音</span>和<span class="hl">同音异义</span></div>
+    </div>
+    <div style="margin-top:14px">
+      <div class="chk"><input type="checkbox" id="c1" onchange="upd()"><label for="c1">词汇80-100条过完（含搭配+语境）</label></div>
+      <div class="chk"><input type="checkbox" id="c2" onchange="upd()"><label for="c2">5个多义汉字音训读练习</label></div>
+      <div class="chk"><input type="checkbox" id="c3" onchange="upd()"><label for="c3">惯用句默念可用场景（応答/记述）</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- Module 2 -->
+<div class="mod">
+  <div class="mod-h" onclick="toggleMod(2)">
+    <div class="mod-h-l"><div class="mod-n m2">2</div><div><div class="mod-t">语法・排序・敬语辨析</div><div class="mod-d">翻卡片+选题+敬语辨析</div></div></div>
+    <div style="display:flex;align-items:center;gap:8px"><span class="mod-time">30min</span><span class="chev" id="ch2">▼</span></div>
+  </div>
+  <div class="mod-body" id="mb2">
+    <div class="tabs" id="tab2"></div>
+    <div class="tcon on" id="tc2-1">
+      <div class="stitle teal">语法句型翻卡片（点击翻面看说明+例句+翻译）</div>
+      <div class="fc" id="fc-gram" onclick="flipCard('gram')"><div class="fc-front" id="fc-gram-front"></div><div class="fc-back" id="fc-gram-back"></div><div class="fc-tip">点击翻面</div></div>
+      <div class="fc-nav"><button class="fc-btn prev" onclick="navCard('gram',-1)">上一张</button><span class="fc-count" id="fc-gram-count"></span><button class="fc-btn next" onclick="navCard('gram',1)">下一张</button></div>
+      <div style="margin-top:8px"><button class="fc-known" id="fc-gram-known" onclick="markKnown('gram')">标记已掌握</button></div>
+    </div>
+    <div class="tcon" id="tc2-2">
+      <div class="stitle">排序题（选正解排列）</div>
+      <div id="orderList"></div>
+      <div class="tip"><b>技巧：</b>先找句尾动词定框架→再排修饰语→最后检查助词接续</div>
+    </div>
+    <div class="tcon" id="tc2-3">
+      <div class="stitle red">敬语辨析（选最合适的说法）</div>
+      <div id="keigoList"></div>
+      <div class="tip"><b>判断标准：</b>不只看语法规则，优先判断<span class="hl">日本人实际会不会这么说</span></div>
+    </div>
+    <div style="margin-top:14px">
+      <div class="chk"><input type="checkbox" id="c4" onchange="upd()"><label for="c4">20道真题语法/排序题完成</label></div>
+      <div class="chk"><input type="checkbox" id="c5" onchange="upd()"><label for="c5">5道敬语辨析完成</label></div>
+      <div class="chk"><input type="checkbox" id="c6" onchange="upd()"><label for="c6">错题归档：只记差异点</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- Module 3 -->
+<div class="mod">
+  <div class="mod-h" onclick="toggleMod(3)">
+    <div class="mod-h-l"><div class="mod-n m3">3</div><div><div class="mod-t">听力 60min（特A分水岭）</div><div class="mod-d">模擬応答+精听+泛听</div></div></div>
+    <div style="display:flex;align-items:center;gap:8px"><span class="mod-time">60min</span><span class="chev" id="ch3">▼</span></div>
+  </div>
+  <div class="mod-body" id="mb3">
+    <div class="tabs" id="tab3"></div>
+    <div class="tcon on" id="tc3-1">
+      <div class="stitle red">模擬応答問題（按特A級风格模拟·点播放听语音）</div>
+      <div class="tip"><b>练法：</b>先点播放听语音→自己口头模拟应答→再选选项核对。语法对≠正确，优先判断<span class="hl">日本职场会不会这么回话</span></div>
+      <div id="listenList"></div>
+    </div>
+    <div class="tcon" id="tc3-2">
+      <div class="stitle green">精听策略（会話・説明問題）</div>
+      <div class="gc"><div class="pat">高频会話結构</div><div class="ex">问题提出→对方犹豫→建议/决定<br>抓「じゃ、これにする」「そうね、〇〇がいい」→问最终决定什么</div></div>
+      <div class="gc"><div class="pat">任务交代→遗漏→追问</div><div class="ex">抓「あれ？」「忘れていた」→问之后首先做什么</div></div>
+      <div class="gc"><div class="pat">调查结果→图表→意外发现</div><div class="ex">抓「意外な結果」「注目すべきは」→问意外的是哪个</div></div>
+      <div class="gc"><div class="pat">seminar说明→论点→结论</div><div class="ex">抓「つまり」「要するに」「結論として」→问主旨是什么</div></div>
+      <div class="tip"><b>精听方法：</b>错题段落只听写关键句→标出转折/省略/言外之意→对照原文→分析漏听信号词</div>
+    </div>
+    <div class="tcon" id="tc3-3">
+      <div class="stitle">泛听磨耳朵（15min）</div>
+      <div class="gc"><div class="pat">NHK ビジネスアイ</div><div class="mean">商业词汇+专业语调</div></div>
+      <div class="gc"><div class="pat">NHK ニュース Web</div><div class="mean">nhk.or.jp 原速新闻</div></div>
+      <div class="gc"><div class="pat">TED Talks (日本語)</div><div class="mean">ted.com/talks?language=ja 演讲体</div></div>
+      <div class="gc"><div class="pat">企業IR動画</div><div class="mean">各企業決算説明会 商务演示</div></div>
+      <div class="tip"><b>要求：</b>不求全懂，适应原生语速、连读、专业题材语调</div>
+    </div>
+    <div style="margin-top:14px">
+      <div class="chk"><input type="checkbox" id="c7" onchange="upd()"><label for="c7">模擬応答：听语音→模拟应答→核对（20min）</label></div>
+      <div class="chk"><input type="checkbox" id="c8" onchange="upd()"><label for="c8">长音频精听：错题段落听写（25min）</label></div>
+      <div class="chk"><input type="checkbox" id="c9" onchange="upd()"><label for="c9">泛听NHK/演讲原速（15min）</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- Module 4 -->
+<div class="mod">
+  <div class="mod-h" onclick="toggleMod(4)">
+    <div class="mod-h-l"><div class="mod-n m4">4</div><div><div class="mod-t">読解限时+記述输出</div><div class="mod-d">模擬読解+記述+策略</div></div></div>
+    <div style="display:flex;align-items:center;gap:8px"><span class="mod-time">60min</span><span class="chev" id="ch4">▼</span></div>
+  </div>
+  <div class="mod-body" id="mb4">
+    <div class="tabs" id="tab4"></div>
+    <div class="tcon on" id="tc4-1">
+      <div class="stitle green">模擬読解問題（按特A級难度模拟）</div>
+      <div class="tip"><b>限时40min·不许查词。</b>先读文章→再答题→最后点显示正解。订正重点：<span class="hl">日本人的迂回逻辑、隐含判断</span></div>
+      <div id="readList"></div>
+    </div>
+    <div class="tcon" id="tc4-2">
+      <div class="stitle">記述問題A（填空题）</div>
+      <div id="writeAList"></div>
+      <div class="stitle teal" style="margin-top:16px">記述問題B（排序题）</div>
+      <div id="writeBList"></div>
+      <div class="tip" style="margin-top:12px"><b>硬性要求：</b>①文体严格匹配题目 ②刻意用1-2个高级接续 ③对照标答标出文体偏差/中式日语</div>
+    </div>
+    <div class="tcon" id="tc4-3">
+      <div class="stitle purple">商务表达模板（记述参考）</div>
+      <div class="gc"><div class="pat">开头寒暄</div><div class="ex">お世話になっております</div></div>
+      <div class="gc"><div class="pat">结尾请求</div><div class="ex">ご検討のほどお願い申し上げます</div></div>
+      <div class="gc"><div class="pat">致歉</div><div class="ex">大変申し訳ございません</div></div>
+      <div class="gc"><div class="pat">委婉拒绝</div><div class="ex">検討させていただきます / 難しい状況でございます</div></div>
+      <div class="gc"><div class="pat">自谦不在</div><div class="ex">ただ今席を外しております</div></div>
+      <div class="gc"><div class="pat">感谢来访</div><div class="ex">ご足労いただきありがとうございました</div></div>
+      <div class="gc"><div class="pat">接续词区分</div><div class="ex">转折：しかし(正式) / だが(口语) / ただ(委婉最得体)<br>因果：したがって(必然) / そのため(事实结果)<br>总结：つまり / 要するに / 結論として</div><div class="note">禁忌：书面避免「全然～ない」「～って」</div></div>
+    </div>
+    <div style="margin-top:14px">
+      <div class="chk"><input type="checkbox" id="c10" onchange="upd()"><label for="c10">模擬読解限时分题完成（40min·不许查词）</label></div>
+      <div class="chk"><input type="checkbox" id="c11" onchange="upd()"><label for="c11">記述完整手写1道（20min·文体匹配+高级表达）</label></div>
+      <div class="chk"><input type="checkbox" id="c12" onchange="upd()"><label for="c12">对照标答：标出偏差/不自然/中式日语</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- Module 5 -->
+<div class="mod">
+  <div class="mod-h" onclick="toggleMod(5)">
+    <div class="mod-h-l"><div class="mod-n m5">5</div><div><div class="mod-t">每周全套限时模考</div><div class="mod-d">每7天1次·完全复刻考试流程</div></div></div>
+    <div style="display:flex;align-items:center;gap:8px"><span class="mod-time">125min</span><span class="chev" id="ch5">▼</span></div>
+  </div>
+  <div class="mod-body" id="mb5">
+    <div class="mock">
+      <div style="font-size:15px;font-weight:600;color:var(--purple);margin-bottom:8px">A-C全套仿真</div>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>部分</th><th>时间</th><th>题型</th><th>分值</th></tr></thead><tbody>
+        <tr><td>読解記述</td><td>80min</td><td>文法語彙+読解+漢字A/B+記述A/B</td><td>500</td></tr>
+        <tr><td>聴解</td><td>45min</td><td>写真+聴読解+応答+会話説明</td><td>500</td></tr>
+      </tbody></table></div>
+      <div style="font-size:12px;color:var(--dim);margin-top:8px">总分1000·特A930+·无单项零分·读解后立即听力无休息</div>
+    </div>
+    <div class="tip"><b>模考目的：</b>①耐力训练 ②发现单项过低被判无效风险 ③当天可压缩日常模块优先仿真</div>
+    <div style="margin-top:10px"><div class="chk"><input type="checkbox" id="c13" onchange="upd()"><label for="c13">本周完成1套A-C真题全套限时模考</label></div></div>
+  </div>
+</div>
+
+<!-- Iron Rules -->
+<div class="mod">
+  <div class="mod-h" onclick="toggleMod(6)">
+    <div class="mod-h-l"><div class="mod-n m1">!</div><div><div class="mod-t">特A专属铁律</div><div class="mod-d">每天记住5条</div></div></div>
+    <span class="chev" id="ch6">▼</span>
+  </div>
+  <div class="mod-body" id="mb6">
+    <div class="rule"><div class="rule-n">1</div><div class="rule-t"><b>绝不割裂：</b>背的惯用句立刻想象能不能用在听力応答或记述写作里</div></div>
+    <div class="rule"><div class="rule-n">2</div><div class="rule-t"><b>敬语不学死规则：</b>优先记真题高频正确范例，判断标准是日本人实际会不会这么说</div></div>
+    <div class="rule"><div class="rule-n">3</div><div class="rule-t"><b>记述是受控答题：</b>高得体度、拒绝炫技、优先贴合日本人标准答案表达习惯</div></div>
+    <div class="rule"><div class="rule-n">4</div><div class="rule-t"><b>応答≠语法正确：</b>优先判断「这个回答在日本职场会不会这么回话」</div></div>
+    <div class="rule"><div class="rule-n">5</div><div class="rule-t"><b>不刷新题泛滥：</b>反复啃近15套真题，外部材料只用来磨耳朵</div></div>
+  </div>
+</div>
+
+<!-- Speed ref -->
+<div class="mod">
+  <div class="mod-h" onclick="toggleMod(7)">
+    <div class="mod-h-l"><div class="mod-n m2">∑</div><div><div class="mod-t">极简速记</div><div class="mod-d">每日≈2.5-3h</div></div></div>
+    <span class="chev" id="ch7">▼</span>
+  </div>
+  <div class="mod-body" id="mb7">
+    <div class="spd">
+      <div class="spd-i"><div class="t">30min</div><div class="d">词汇+惯用+汉字</div></div>
+      <div class="spd-i"><div class="t">30min</div><div class="d">文法+排序+敬语</div></div>
+      <div class="spd-i"><div class="t">60min</div><div class="d">听力(応答20+精25+泛15)</div></div>
+      <div class="spd-i"><div class="t">60min</div><div class="d">模擬読解+記述</div></div>
+      <div class="spd-i" style="grid-column:span 2"><div class="t">每周1次</div><div class="d">全套限时模考</div></div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;padding:16px;color:var(--faint);font-size:11px">
+  素材：第167/177回J.TEST A-C真题+特A級模擬出題·BJT商务日语敬语<br>2026-09-02
+</div>
+</div>
+
+<script>
+document.getElementById('dateBg').textContent=new Date().toLocaleDateString('zh-CN');
+
+// === 词汇大词库（90词·每日轮换30个·背面为日文解释） ===
+var vocabPool=[
+{jp:"採算",rd:"さいさん",jdef:"収入と支出の計算。利益が得られるかどうかの見込み。",ex:"採算が取れない事業は撤退すべきだ。"},
+{jp:"懐疑的",rd:"かいぎょてき",jdef:"疑いを持っているさま。信用できないと感じる様子。",ex:"A社との合併に対し懐疑的な意見が多い。"},
+{jp:"傍若無人",rd:"ぼうじゃくぶじん",jdef:"周囲を気にせず勝手気ままに振る舞うこと。",ex:"まさに傍若無人だよね。"},
+{jp:"乾坤一擲",rd:"けんこんいってき",jdef:"成功の是非を賭けて、一度の勝負に全てを懸けること。",ex:"乾坤一擲、やるしかない。"},
+{jp:"神出鬼没",rd:"しんしゅつきぼつ",jdef:"どこから現れるか、どこへ消えるか分からないこと。",ex:"神出鬼没はやめてほしい。"},
+{jp:"多かれ少なかれ",rd:"ー",jdef:"多いにしろ少ないにしろ、程度の差はあれ。",ex:"多かれ少なかれ影響がある。"},
+{jp:"顕著",rd:"けんちょ",jdef:"著しく目立つこと。はっきりと現れるさま。",ex:"原材料高騰の影響が利益率に顕著に表れ。"},
+{jp:"堅調",rd:"けんちょう",jdef:"安定して良い状態が続くこと。",ex:"売上高が堅調に推移している。"},
+{jp:"稟議制度",rd:"りんぎせいど",jdef:"複数の部署の確認と承認を経て意思決定を行う仕組み。",ex:"稟議制度のため時間がかかる。"},
+{jp:"割高",rd:"わりだか",jdef:"平均より割合的に高いこと。",ex:"年齢が高い人ほど割高でも気にしない。"},
+{jp:"戸惑う",rd:"とまどう",jdef:"どうしてよいか分からず迷う。",ex:"どこから着手すべきか戸惑う。"},
+{jp:"細分化",rd:"さいぶんか",jdef:"細かく分割すること。",ex:"タスクの細分化と期日の前倒し設定。"},
+{jp:"先延ばし",rd:"さきのばし",jdef:"後回しにすること。やるべきことを後日に回すこと。",ex:"先延ばし癖を直す必要がある。"},
+{jp:"完璧主義",rd:"かんぺきしゅぎ",jdef:"完璧を求める性格。欠点を許せない性質。",ex:"完璧主義の人も先延ばしに要注意。"},
+{jp:"図々しい",rd:"ずうずうしい",jdef:"厚かましい。遠慮を知らない。",ex:"なんか図々しいよね。"},
+{jp:"見るに堪えない",rd:"ー",jdef:"見るのも辛いほどひどい。",ex:"見るに堪えない映画だった。"},
+{jp:"失礼極まりない",rd:"しつれいきわまりない",jdef:"この上なく失礼である。",ex:"名前間違い→失礼極まりないね。"},
+{jp:"推移",rd:"すいい",jdef:"物事が時間とともに移り変わること。",ex:"国内需要拡大を背景に堅調に推移。"},
+{jp:"負荷",rd:"ふか",jdef:"かかる負担。負担のかかり具合。",ex:"環境への負荷が低減する。"},
+{jp:"上々",rd:"じょうじょう",jdef:"非常に良いこと。優れていること。",ex:"新製品の評判は上々そのものだ。"},
+{jp:"地産地消",rd:"ちさんちしょう",jdef:"その地域で生産された農産物を同じ地域で消費すること。",ex:"地産地消を推進している。"},
+{jp:"まちまち",rd:"ー",jdef:"それぞれ違っているさま。一定でないこと。",ex:"みんな意見がまちまちで。"},
+{jp:"飽き",rd:"あき",jdef:"興味を持たなくなること。",ex:"飽きが来る（开始厌倦）"},
+{jp:"滞る",rd:"とどこおる",jdef:"順調に進まず、遅れること。",ex:"作業はちょっと滞ってます。"},
+{jp:"リピート率",rd:"ー",jdef:"同じ商品やサービスを再度購入する割合。",ex:"他の年代よりリピート率が高い。"},
+{jp:"ターゲット",rd:"ー",jdef:"狙いを絞った対象。目標とする層。",ex:"ターゲットを年配の人にしている。"},
+{jp:"のんびり",rd:"ー",jdef:"気がねなく、ゆったりしているさま。",ex:"家でのんびり過ごしている。"},
+{jp:"〜も無理はない",rd:"ー",jdef:"〜というのも当然だ。",ex:"部長が怒るのも無理はない。"},
+{jp:"〜限りでは",rd:"ー",jdef:"〜の範囲内で判断する限り。",ex:"私の聞いた限りではまだ解決していない。"},
+{jp:"滞在",rd:"たいざい",jdef:"ある場所に一定期間とどまること。",ex:"海外出張で3日間滞在する。"},
+{jp:"撤退",rd:"てったい",jdef:"そこから退くこと。事業や市場から退くこと。",ex:"赤字市場からの撤退を決めた。"},
+{jp:"見込む",rd:"みこむ",jdef:"そうなると予想する。期待する。",ex:"売上の増加を見込んで増産する。"},
+{jp:"柔軟",rd:"じゅうなん",jdef:"状況に応じて態度や方針を変えられること。",ex:"柔軟な対応が求められる。"},
+{jp:"着手",rd:"ちゃくしゅ",jdef:"物事に取りかかること。",ex:"新プロジェクトに着手する。"},
+{jp:"契約",rd:"けいやく",jdef:"当事者間で合意をし法的効果を発生させること。",ex:"契約書に署名・押印した。"},
+{jp:"遵守",rd:"じゅんしゅ",jdef:"決まりや法律などを守ること。",ex:"規則を厳格に遵守する。"},
+{jp:"是正",rd:"ぜせい",jdef:"悪い状態を正すこと。",ex:"労働環境の是正を求める。"},
+{jp:"隘路",rd:"あいろ",jdef:"行く手をはばむ困難。ボトルネック。",ex:"資金調達が隘路となっている。"},
+{jp:"節減",rd:"せつげん",jdef:"経費や数量を減らすこと。",ex:"経費の節減に努める。"},
+{jp:"規模",rd:"きぼ",jdef:"大きさ。事業や組織の大きさ。",ex:"事業規模を拡大する。"},
+{jp:"採用",rd:"さいよう",jdef:"人を雇うこと。案や方法を採り入れること。",ex:"新卒採用を強化する。"},
+{jp:"景況",rd:"けいきょう",jdef:"景気や市況の状態。",ex:"景況の悪化が懸念される。"},
+{jp:"据え置く",rd:"すえおく",jdef:"そのままにしておく。状態を変えず維持する。",ex:"価格を据え置く方針だ。"},
+{jp:"是認",rd:"ぜにん",jdef:"その通りだと認めること。",ex:"会社側が組合の要求を是認した。"},
+{jp:"忌避",rd:"きひ",jdef:"嫌って避けること。",ex:"危険作業の忌避を申し出る。"},
+{jp:"潤沢",rd:"じゅんたく",jdef:"金銭などがゆきわたって豊かなこと。",ex:"資金が潤沢にある。"},
+{jp:"滞納",rd:"たいのう",jdef:"納めるべき金を期日までに納めないこと。",ex:"家賃の滞納が続いている。"},
+{jp:"配慮",rd:"はいりょ",jdef:"相手のために心をくばること。",ex:"周囲への配慮を欠かさない。"},
+{jp:"勧誘",rd:"かんゆう",jdef:"勧めて誘うこと。加入や契約を勧めること。",ex:"しつこい勧誘は控える。"},
+{jp:"同調",rd:"どうちょう",jdef:"他の意見に従うこと。同感すること。",ex:"上司の意見に同調する。"},
+{jp:"懸念",rd:"けねん",jdef:"気にかかって不安に思うこと。",ex:"安全性に対する懸念が高まっている。"},
+{jp:"急騰",rd:"きゅうとう",jdef:"物価や株価が急激に上がること。",ex:"原油価格が急騰した。"},
+{jp:"下落",rd:"げらく",jdef:"株価や物価が下がること。",ex:"株価が下落を続けている。"},
+{jp:"安定",rd:"あんてい",jdef:"状態がしっかりして変わらないこと。",ex:"経済が安定して成長する。"},
+{jp:"逼迫",rd:"ひっぱく",jdef:"余裕がなくなること。資金などが厳しくなること。",ex:"資金繰りが逼迫している。"},
+{jp:"節目",rd:"ふしめ",jdef:"物事の区切りの時点。",ex:"大事な節目を迎える。"},
+{jp:"拠点",rd:"きょてん",jdef:"活動のよりどころとなる場所。",ex:"海外に新拠点を設ける。"},
+{jp:"基盤",rd:"きばん",jdef:"物事の基礎となるもの。",ex:"信頼関係を基盤とする。"},
+{jp:"検証",rd:"けんしょう",jdef:"本当かどうかを確かめること。",ex:"事故原因を検証する。"},
+{jp:"総括",rd:"そうかつ",jdef:"全体をまとめること。",ex:"年度の総括を行う。"},
+{jp:"廃棄",rd:"はいき",jdef:"不要なものとして捨てること。",ex:"在庫を廃棄する。"},
+{jp:"停滞",rd:"ていたい",jdef:"進まずに止まっていること。",ex:"成長が停滞している。"},
+{jp:"復調",rd:"ふくちょう",jdef:"状態が回復して元に戻ること。",ex:"業績が復調の兆しを見せた。"},
+{jp:"転換",rd:"てんかん",jdef:"方針や状態をすっかり変えること。",ex:"ビジネスモデルを転換する。"},
+{jp:"念頭",rd:"ねんとう",jdef:"心の中。意識の上にのせること。",ex:"コストを念頭に置いて企画する。"},
+{jp:"損失",rd:"そんしつ",jdef:"金銭や利益を失うこと。",ex:"多大な損失を被った。"},
+{jp:"措置",rd:"そち",jdef:"とるべき手段。処置。",ex:"適切な措置を講じる。"},
+{jp:"顕在化",rd:"けんざいか",jdef:"隠れていたものが表面に現れること。",ex:"リスクが顕在化した。"},
+{jp:"潜在的",rd:"せんざいてき",jdef:"今は現れていないが、可能性として持っているさま。",ex:"潜在的な需要を掘り起こす。"},
+{jp:"優位性",rd:"ゆういせい",jdef:"他よりすぐれていること。",ex:"技術的な優位性を確保する。"},
+{jp:"高騰",rd:"こうとう",jdef:"値段が高く上がること。",ex:"原材料費が高騰している。"},
+{jp:"激減",rd:"げきげん",jdef:"数や量が極端に減ること。",ex:"売上が前年比で激減した。"},
+{jp:"躊躇",rd:"ちゅうちょ",jdef:"決断できずに迷うこと。",ex:"躊躇なく決断する。"},
+{jp:"矛盾",rd:"むじゅん",jdef:"理屈や事柄が合わないこと。",ex:"発言に矛盾がある。"},
+{jp:"妥協",rd:"だきょう",jdef:"対立する両者が意見を譲り合うこと。",ex:"妥協点を見出す。"},
+{jp:"慎重",rd:"しんちょう",jdef:"注意深く念を入れるさま。",ex:"慎重に判断を下す。"},
+{jp:"見地",rd:"けんち",jdef:"物事を判断する立場や観点。",ex:"その見地からは賛成できない。"},
+{jp:"兼ねる",rd:"かねる",jdef:"二つのことを同時に行う。",ex:"社長が営業部長を兼ねている。"},
+{jp:"依拠",rd:"いきょ",jdef:"よりどころとすること。依存すること。",ex:"データに依拠して判断する。"},
+{jp:"沿革",rd:"えんかく",jdef:"物事が変遷してきた歴史。",ex:"会社の沿革を紹介する。"},
+{jp:"規格",rd:"きかく",jdef:"品物の品質や形状などの標準。",ex:"国際規格に適合する。"},
+{jp:"体系化",rd:"たいけいか",jdef:"ばらばらのものを一つの体系にまとめること。",ex:"知識を体系化して整理する。"},
+{jp:"前進",rd:"ぜんしん",jdef:"前へ進むこと。",ex:"計画が前進を見せた。"},
+{jp:"隔たり",rd:"へだたり",jdef:"距離や心の差があること。",ex:"世代間の隔たりを感じる。"},
+{jp:"求める",rd:"もとめる",jdef:"ほしいと思う。得ようとする。",ex:"迅速な対応を求める。"},
+{jp:"潤む",rd:"うるおむ",jdef:"水分が足りて満ちる。また、利益で満ちる。",ex:"目が潤む（感動で）"},
+{jp:"講じる",rd:"こうじる",jdef:"行う。特に、会合や儀式を行う。",ex:"記者会見を講じる。"}
+];
+
+// 每日选30词（按日期轮换）
+function getDateKey(){var t=new Date();return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');}
+function getDayOffset(){var epoch=new Date('2026-09-02');var now=new Date();return Math.floor((now-epoch)/86400000);}
+function getDailyVocab(){
+  var offset=Math.max(0,getDayOffset());
+  var start=(offset*30)%vocabPool.length;
+  var result=[];
+  for(var i=0;i<30;i++){result.push(vocabPool[(start+i)%vocabPool.length]);}
+  return result;
+}
+function getHistoryVocab(offset){
+  var start=(offset*30)%vocabPool.length;
+  var result=[];
+  for(var i=0;i<30;i++){result.push(vocabPool[(start+i)%vocabPool.length]);}
+  return result;
+}
+function saveHistory(){
+  try{
+    var hist=JSON.parse(localStorage.getItem('jtest_hist')||'{}');
+    var key=getDateKey();
+    if(!hist[key]){hist[key]={offset:getDayOffset(),date:key};localStorage.setItem('jtest_hist',JSON.stringify(hist));}
+  }catch(e){}
+}
+function getHistoryList(){
+  try{return JSON.parse(localStorage.getItem('jtest_hist')||'{}');}catch(e){return{};}
+}
+
+// 当前词汇模式：today/history
+var vocabMode='today';
+var vocabHistoryOffset=-1;
+var dailyVocab=getDailyVocab();
+saveHistory();
+var vocabData=dailyVocab;
+
+var idiomData=[
+{jp:"石橋を叩いて渡る",rd:"いしばしをたたいてわたる",jdef:"非常に用心深く行動すること。",ex:"思い切って行動→「石橋を叩いて渡るということですか」"},
+{jp:"当たって砕けろ",rd:"あたってくだけろ",jdef:"恐れずに思い切って行動しろという意味。",ex:"当たって砕けろの精神ですね"},
+{jp:"仏の顔も三度",rd:"ほとけのかおもさんど",jdef:"どんなに温厚な人でも三度目には怒るということ。",ex:"仏の顔も三度ですからね"},
+{jp:"猫に小判",rd:"ねこにこばん",jdef:"価値の分からない人に貴重なものを与えても無駄ということ。",ex:"猫に小判だよ"},
+{jp:"失敗は成功のもと",rd:"しっぱいはせいこうのもと",jdef:"失敗から学んで次に活かせば成功につながるということ。",ex:"失敗は成功のもとだよ"},
+{jp:"ちりも積もれば山となる",rd:"ー",jdef:"小さなことも積み重なれば大きくなるということ。",ex:"ちりも積もれば山となる"},
+{jp:"気分転換",rd:"きぶんてんかん",jdef:"気持ちを切り替えること。",ex:"気分転換に行かない?"},
+{jp:"煙たい",rd:"けむたい",jdef:"煙が目に染みる。また、人が近づきにくい。",ex:"たき火の煙が煙たいね"},
+{jp:"意志が弱い",rd:"いしがよわい",jdef:"自分をコントロールする力が不足している。",ex:"ダイエット中→意志が弱いなあ"},
+{jp:"お世辞が上手",rd:"おせじがじょうず",jdef:"相手を褒めてご機嫌を取るのが得意なこと。",ex:"お世辞が上手だね"},
+{jp:"のどが渇く",rd:"ー",jdef:"喉が乾いて水を飲みたくなる。",ex:"擬態語辨析：だぶだぶ/おどおど"},
+{jp:"失礼極まりない",rd:"しつれいきわまりない",jdef:"この上なく失礼である。",ex:"名前間違い→失礼極まりないね"}
+];
+
+var kanjiData=[
+{jp:"信号",rd:"しんごう",jdef:"第177回真题。注意长音。",ex:"非「しんご」"},
+{jp:"可惜",rd:"ざんねん",jdef:"第167回真题。训读「あたら」也常考。",ex:"残念と同じ意味"},
+{jp:"強引",rd:"ごういん",jdef:"第167回。無理やりに物事を進めるさま。",ex:"非「きょういん」"},
+{jp:"特許",rd:"とっきょ",jdef:"第167回。独自の技術を保護する権利。",ex:"促音+拗音，非「とくきょ」"},
+{jp:"分厚",rd:"ぶあつ",jdef:"第167回。厚みがあること。",ex:"≠無難(ぶなん)"},
+{jp:"悲酸",rd:"ひさん",jdef:"第177回。悲しくてたまらないさま。",ex:"≠非難(ひあん)"},
+{jp:"溶岩",rd:"ようがん",jdef:"第177回。火山から流れ出る溶融物質。",ex:"非「ようげん」"},
+{jp:"危険",rd:"きけん",jdef:"第177回。危ういこと。",ex:"与期限/機嫌同音異义"},
+{jp:"為替",rd:"かわせ",jdef:"高频。金銭を送る手段。",ex:"特殊読み，非「いたけ」"},
+{jp:"相殺",rd:"そうさい",jdef:"高频。差し引きして残りをなくすこと。",ex:"非「そうさつ」"},
+{jp:"老舗",rd:"しにせ",jdef:"高频。長く営業を続けている店。",ex:"特殊訓読，非「ろうちん」"},
+{jp:"追及/追求/追究",rd:"ついきゅう",jdef:"高频。同音異義詞の書き分け。",ex:"意味が異なる"},
+{jp:"潤",rd:"うるお",jdef:"第167回。潤うの訓読。",ex:"非「じゅん」"},
+{jp:"補",rd:"おぎな",jdef:"第167回。補うの送仮名。",ex:"「補う」→「おぎな」"}
+];
+
+// === 语法数据（翻卡片：正面句型，背面说明+例句+中文翻译） ===
+var gramData=[
+{pat:"〜を踏まえて",mean:"基于～，考虑到～",ex:"会議の結果を踏まえて新制度を導入する。",exCn:"基于会议结果导入新制度。",note:"vs をよそに(无视) vs を限りに(截止)"},
+{pat:"〜かねない",mean:"有可能～（消极结果）",ex:"誤解を招きかねない表現だった。",exCn:"是容易引起误解的表达。",note:"vs かねる(难以做到) vs がたい(难以)"},
+{pat:"〜にほかならない",mean:"正是～无疑",ex:"成功はチーム全員の努力にほかならない。",exCn:"成功正是全队成员的努力。",note:"vs にすぎない(不过是) vs に足りない(不值得)"},
+{pat:"〜までもなく",mean:"不必～就",ex:"相談するまでもなくまず自分で考える。",exCn:"不必商量，先自己思考。",note:"vs にあたって(之际) vs に先立って(之前)"},
+{pat:"〜の間でさえ",mean:"连～之间都",ex:"専門家の間でさえ意見が分かれている。",exCn:"连专家之间意见都分歧。",note:"vs をはじめ(以～为首)"},
+{pat:"〜にもかかわらず",mean:"尽管～",ex:"注意したにもかかわらず同じ失敗を繰り返した。",exCn:"尽管提醒了还是重复同样的错误。",note:"vs がゆえに(因为) vs ばかりに(正因为)"},
+{pat:"〜いかんで",mean:"取决于～",ex:"社長の決断いかんで会社の運命が決まる。",exCn:"公司命运取决于社长的决断。",note:"いかん=如何 正式书面"},
+{pat:"〜どころではない",mean:"哪有～的闲",ex:"納期が迫っているので休んでいるどころではない。",exCn:"交货期临近，哪有休息的闲。",note:"强调当前无法做某事"},
+{pat:"ご〜のうえ",mean:"请～之后",ex:"資料をご確認のうえご署名ください。",exCn:"请确认资料后签字。",note:"お/ご+名詞+の+うえ=敬语"},
+{pat:"〜なくして",mean:"没有～就（不能）",ex:"彼の努力なくして成功はなかっただろう。",exCn:"没有他的努力恐怕就没有成功。",note:"vs ながらも(虽然)"},
+{pat:"〜せざるを得ない",mean:"不得不～",ex:"旅行は中止せざるを得ませんね。",exCn:"旅行不得不取消了啊。",note:"応答高頻：大雪だから仕方ない"},
+{pat:"〜あげく",mean:"最终～（消极结果）",ex:"遅刻を繰り返したあげく首になった。",exCn:"反复迟到最终被开除了。",note:"第177回記述正解"},
+{pat:"〜をもとに",mean:"以～为基础",ex:"調査した結果をもとに報告書を作成した。",exCn:"基于调查结果撰写了报告。",note:"第177回記述正解"},
+{pat:"〜につれて",mean:"随着～",ex:"経済が発展するにつれて環境問題も悪化した。",exCn:"随着经济发展环境问题也恶化了。",note:"第167回記述正解"},
+{pat:"〜のもとで",mean:"在～条件下",ex:"温度と湿度のもとで化学反応が起きる。",exCn:"在温度和湿度条件下发生化学反应。",note:"第167回記述正解"},
+{pat:"多かれ少なかれ",mean:"或多或少",ex:"多かれ少なかれ影響を受ける。",exCn:"或多或少都会受到影响。",note:"第177回記述正解 惯用表达"},
+{pat:"〜ばこそ",mean:"正因为～",ex:"努力あればこその成果だ。",exCn:"正因为努力才有这样的成果。",note:"正向归因强调"},
+{pat:"〜そのものだ",mean:"～本身",ex:"新製品の評判は上々そのものだ。",exCn:"新产品的评价极好。",note:"vs 極まりない vs がち(容易)"}
+];
+
+// === 排序题 ===
+var orderData=[
+{q:"（並べ替え）会議 / 準備 / する",ans:"会議の準備をする",exp:"「の」連体修飾+「する」結句",opts:["会議の準備をする","会議準備をする","会議で準備する","準備の会議をする"]},
+{q:"（並べ替え）部長 / かわりに / 私が",ans:"部長のかわりに私が",exp:"「～のかわりに」=代替～ 商務高頻",opts:["部長のかわりに私が","部長かわりに私は","私のかわりに部長が","部長の私がかわりに"]},
+{q:"（並べ替え）調査した / 結果を / もとに",ans:"調査した結果をもとに",exp:"「をもとに」=以～為基礎 接名詞",opts:["調査した結果をもとに","結果をもとに調査した","調査結果をもとにの","もとに調査した結果を"]},
+{q:"（並べ替え）遅刻を / 繰り返した / あげく",ans:"遅刻を繰り返したあげく",exp:"「〜あげく」=最終(消極) 接過去形",opts:["遅刻を繰り返したあげく","遅刻繰り返しのあげく","あげく遅刻を繰り返した","遅刻のあげく繰り返した"]},
+{q:"（並べ替え）多かれ / 少なかれ",ans:"多かれ少なかれ",exp:"固定慣用表現 不可拆分",opts:["多かれ少なかれ","少なかれ多かれ","多かれと少なかれ","多かれか少なかれ"]}
+];
+
+// === 敬語 ===
+var keigoData=[
+{scene:"同事不在座位，外部来电找人",q:"佐藤は今、席を外しております。",opts:["佐藤は今、休憩なさっています","佐藤は欠席させております","佐藤はただ今席を外しております","佐藤はこちらに出勤しております"],ans:3,exp:"「席を外しております」=自谦語。对外部不能用尊敬語「なさる」描述己方同事"},
+{scene:"送客时感谢对方来访",q:"ご足労いただきありがとうございました。",opts:["平素よりお世話になっております","ご足労いただきありがとうございました","過分なものをいただき恐縮です","ご配慮いただき深く感謝いたします"],ans:2,exp:"送客専用感謝。「ご足労」=劳您大驾"},
+{scene:"商品请客人触摸试用",q:"どうぞお手に取ってご覧ください。",opts:["取り上げてもかまいませんよ","どうぞお持ち帰りください","どうぞお手に取ってご覧ください","どうか触っていただけませんか"],ans:3,exp:"尊敬語+請託表達"},
+{scene:"明日直接去客户公司，跟上司报备",q:"取引先に直行させていただきたいんですが。",opts:["取引先から直帰させていただきたい","取引先に直行させていただきたいんですが","取引先にご教示いただきたいんですが","取引先に同行していただきたいんですが"],ans:2,exp:"「直行」=直接前往(不回公司)。「直帰」=直接回家。自谦「させていただく」表请示"},
+{scene:"社外人士面前称呼己方上司",q:"部長の山田が申しておりました。",opts:["部長様がそうおっしゃっていました","部長の山田が申しておりました","部長山田様が申し上げました","山田部長様がおっしゃっていました"],ans:2,exp:"对外部不用「様」称呼己方上司！用「职位+姓名」+自谦動詞"},
+{scene:"对客户说明（避免二重敬语）",q:"ご説明いたします。",opts:["ご説明させていただきます","ご説明いたします","ご説明になさいます","説明してさしあげます"],ans:2,exp:"「ご〜させていただく」=二重敬語，过度谦让反而不自然。「ご〜いたします」足够礼貌"},
+{scene:"商务电话开场",q:"今お電話よろしいでしょうか。",opts:["今お電話結構だったでしょうか","今お電話失礼でしょうか","今お電話よろしいでしょうか","今お電話大丈夫でしょうか"],ans:3,exp:"「よろしいでしょうか」=现在打电话方便吗？标准商务电话开场"},
+{scene:"转折补充说明",q:"ただ、スケジュールについては…",opts:["でも、スケジュールについては","ただ、スケジュールについては","ところで、スケジュールについては","重ねて、スケジュールについては"],ans:2,exp:"商务中「ただ」做委婉转折比「しかし/でも」更得体"}
+];
+
+// === 模擬応答問題（特A級风格·带语音） ===
+var listenData=[
+{audio:"では、明日10時にお越しください。",opts:["はい、いらっしゃいます","はい、お待ちしています","はい、伺います"],ans:3,exp:"「伺う」=自谦「行く」。不用「お待ちしています」（那是等别人时说的）"},
+{audio:"旅行は中止せざるを得ませんね。",opts:["ええ、中止にはできませんよ","ええ、大雪だから仕方ありませんね","ええ、行ってよかったですね"],ans:2,exp:"共感对方判断，不反驳。社交得体"},
+{audio:"思い切って行動を起こすことも必要だよ。",opts:["仏の顔も三度ですからね","石橋を叩いて渡るということですか","当たって砕けろの精神ですね"],ans:3,exp:"ことわざ对接：冒险→放手一搏"},
+{audio:"最近、疲れているね。仕事、仕事でうんざりだよ。",opts:["それなら恥をかくね","お世辞が上手だね","じゃあ、どこか気分転換に行かない?"],ans:3,exp:"回应对方情绪→提出改善方案"},
+{audio:"このシャツ、似合ってる?",opts:["ちょっと、だぶだぶだね","うーん、おどおどしてるね","ちやほやしすぎじゃない?"],ans:1,exp:"「だぶだぶ」=宽松肥大。vs おどおど(畏缩)"},
+{audio:"見るに堪えない映画だったね。",opts:["うん、あの監督いい映画作ったね","本当、お金を払って損したよ","うん、もう一度見たいね"],ans:2,exp:"「見るに堪えない」=不堪入目→共鸣损失感"},
+{audio:"この郵便、私の名前がまた間違えられてるよ。",opts:["失礼極まりないね","郵便ではあるまいしね","名前は正しく書きたまえ"],ans:1,exp:"「極まりない」=极其～，与对方共感不满"},
+{audio:"A社との合併に対し、皆懐疑的だと聞きましたが。",opts:["ええ、誰もが羨んでいますよ","ええ、誰もうまくいくとは思ってませんよ","ええ、誰もが納得していますよ"],ans:2,exp:"「懐疑的」=怀疑→确认负面预期"},
+{audio:"今回のプロジェクト、うまくいくかな。",opts:["まさに傍若無人だよね","乾坤一擲、やるしかないって","神出鬼没はやめてほしいよ"],ans:2,exp:"四字熟語「乾坤一擲」=孤注一掷"},
+{audio:"どうにかホテルを予約できたよ。",opts:["すぐに予約できたね","思ったより簡単だったね","諦めずに探して良かったね"],ans:3,exp:"「どうにか」=勉强成功→肯定对方的坚持"},
+{audio:"鈴木君って、なんか図々しいよね。",opts:["うん、人の迷惑を考えないよね","うん、後輩の面倒をよく見てるよね","うん、同じ職場でよかったよね"],ans:1,exp:"「図々しい」=厚脸皮→附和负面评价"},
+{audio:"やっと仕事終わった。あー、疲れた。",opts:["本当、ぐったりだね","本当、こっそりだったね","本当、さっぱりしたね"],ans:1,exp:"「ぐったり」=精疲力竭。擬態語対接是応答高頻考法"},
+{audio:"会社の広告、話題になっていますね。",opts:["ええ、いい宣伝になりますね","ええ、飽きられたみたいです","ええ、注目されないんです"],ans:1,exp:"「話題になる」=引起讨论→正面解读"},
+{audio:"冷蔵庫の野菜、まだ使えそう?",opts:["だいぶ老けてるから駄目だよ","どれもしなびてて駄目だよ","まだ潤ってるから駄目だよ"],ans:2,exp:"「しなびる」=蔫了。vs 老ける(显老) vs 潤う(湿润)"},
+{audio:"明日の面接、緊張するなあ。",opts:["ぶらぶらしないようにね","おどおどしないようにね","ちやほやしないようにね"],ans:2,exp:"「おどおど」=畏缩→鼓励放松"},
+{audio:"新入社員の田中さんはどうですか。すごく素直で教えがいがあります。",opts:["そう、それは心配ですね","そんなつもりじゃないんですが","そう、それはよかったです"],ans:3,exp:"正面评价→肯定+共感"},
+{audio:"応募者の書類見たけど、職を転々としてるね。",opts:["うん、すぐ辞めるに越したことはないね","うん、どの職場も1年いたためしがないね","うん、1年どころか2年だよ"],ans:2,exp:"「転々とする」=频繁跳槽→附和观察"},
+{audio:"期待に反して、全然売れませんでしたね。",opts:["ええ、誰も期待してなかったですから","ええ、期待していたので残念ですね","ええ、期待していなかったけど残念です"],ans:2,exp:"「期待に反して」=与期待相反→共感遗憾"}
+];
+
+// === 模擬読解問題（特A級难度） ===
+var readData=[
+{passage:"当社では、原材料費の高騰を受けて、製品価格の3%から5%の引き上げを実施することとなった。しかしながら、長年ご愛顧いただいているお客様との関係を重視し、一部製品については現行価格を維持する。詳細につきましては、別添の資料をご参照いただきたい。なお、本件に関するご質問やご要望がございましたら、担当の山田までお問い合わせいただきたい。",q:"この文章から分かることは何か。",opts:["全ての製品の価格が5%上がる","一部製品は値上げされない","値上げの理由は人件費の上昇である","質問は本社の代表番号に連絡する"],ans:2,exp:"「一部製品については現行価格を維持する」→一部は値上げされない。原因は原材料費高騰であって人件費ではない。問い合わせは担当の山田へ。"},
+{passage:"最近、社内でテレワーク導入の声が高まっている。確かに、通勤時間の削減やワークライフバランスの改善といったメリットは大きい。ただ、コミュニケーションの質が下がる恐れがあることや、情報セキュリティの確保など、解決すべき課題も少なくない。安易な導入ではなく、慎重な検討が必要だ。",q:"筆者の主張に最も近いものはどれか。",opts:["テレワークはすぐに導入すべきである","テレワークのメリットはデメリットより大きい","テレワークは慎重に検討した上で導入すべきである","テレワークはコミュニケーションに悪影響なので導入すべきでない"],ans:3,exp:"「安易な導入ではなく、慎重な検討が必要だ」→慎重な検討の上で導入すべき。メリットも認めているが導入に否定的ではない。"},
+{passage:"アンケート調査の結果、当社の製品に対する顧客満足度は前年比3ポイント上昇し、過去最高となった。特に、品質面での評価が顕著に改善されている。一方で、配送遅延に関する不満も依然として根強く、緊急の改善が求められている。",q:"調査結果について正しいのはどれか。",opts:["全体的に悪化している","品質面の評価は下がった","配送に関する不満が残っている","満足度が前年より下がった"],ans:3,exp:"「配送遅延に関する不満も依然として根強く」→配送に関する不満が残っている。満足度は上昇、品質面は改善している。"},
+{passage:"弊社の新商品につきまして、多大なるご関心をお寄せいただき誠にありがとうございます。現在、予想を上回るお問い合わせをいただいており、生産が追いつかない状況が続いております。入荷時期につきましては、改めて当社ウェブサイトにてご案内申し上げます。今しばらくお待ちくださいますようお願い申し上げます。",q:"この文書の目的は何か。",opts:["新商品の予約を受付ける","新商品の入荷時期をお知らせする","新商品が品切れであることを説明し、待ってもらう","新商品の仕様について説明する"],ans:3,exp:"「生産が追いつかない」「今しばらくお待ちください」→品切れを説明し、待機を依頼するのが目的。入荷時期は改めて案内するとある。"},
+{passage:"部長の田中が申しております。先日のご提案につきまして、社内で検討いたしました結果、誠に残念ではございますが、現状のリソースでは対応が困難な状況でございます。しかしながら、来年度の予算において再検討する予定でございますので、何卒ご理解賜りますようお願い申し上げます。",q:"このメールから読み取れることは何か。",opts:["今回の提案は採用された","予算の理由で今回は見送られた","来年度も提案する予定はない","リソースに余裕がある"],ans:2,exp:"「現状のリソースでは対応が困難」→予算/リソースの理由で今回は見送り。来年度再検討の予定あり。"}
+];
+
+var writeAData=[
+{q:"(A)そう→(B)受かった",a:"そう",b:"受かった",exp:"「そう」=那样，「受かった」=考上了"},
+{q:"(A)困わ→(B)使い→不便だ",a:"困わ",b:"使い",exp:"「困る」→「困わ」連用形+「使い」"},
+{q:"(A)いれ→(B)待つ→待合室",a:"いれ",b:"待つ",exp:"「入れる」→「いれ」+「待つ」→待合室"},
+{q:"(A)朝ごはん→(B)おなか→食べた",a:"朝ごはん",b:"おなか",exp:"朝ごはんをおなかいっぱい食べた"},
+{q:"(A)少な→(B)やり→残りが少ない",a:"少な",b:"やり",exp:"「少ない」→連用形「少な」"}
+];
+
+var writeBData=[
+{q:"水を出しっぱなしに（忘れずに）",ans:"水を出しっぱなしに",exp:"「っぱなし」=放任不管 接動詞ます形"},
+{q:"経済が発展するにつれて（変化する）",ans:"経済が発展するにつれて",exp:"「〜につれて」=随着～ 接辞書形"},
+{q:"温度と湿度のもとで（条件）",ans:"温度と湿度のもとで",exp:"「〜のもとで」=在～条件下"},
+{q:"他人の悪口を言わない（忠告）",ans:"他人の悪口を言わない",exp:"「悪口を言う」=说坏话 否定形结句"}
+];
+
+// === 翻卡片系统 ===
+var cardState={vocab:{idx:0,flipped:false,known:new Set()},idiom:{idx:0,flipped:false,known:new Set()},kanji:{idx:0,flipped:false,known:new Set()},gram:{idx:0,flipped:false,known:new Set()}};
+
+function getData(type){
+  if(type==='vocab')return vocabData;
+  if(type==='idiom')return idiomData;
+  if(type==='kanji')return kanjiData;
+  if(type==='gram')return gramData;
+  return[];
+}
+
+function renderCard(type){
+  var data=getData(type);
+  var s=cardState[type];
+  var d=data[s.idx];
+  document.getElementById('fc-'+type+'-front').textContent=type==='gram'?d.pat:d.jp;
+  var back='';
+  if(type==='gram'){
+    back='<div class="jp">'+d.pat+'</div><div class="cn" style="margin-top:8px;font-size:14px;color:var(--accent)">'+d.mean+'</div><div class="ex" style="margin-top:10px">'+d.ex+'</div><div class="exCn">'+d.exCn+'</div><div class="note">'+d.note+'</div>';
+  }else{
+    back='<div class="jp">'+d.jp+'</div><div class="rd">'+d.rd+'</div><div class="jdef">'+d.jdef+'</div><div class="ex">'+d.ex+'</div>';
+  }
+  document.getElementById('fc-'+type+'-back').innerHTML=back;
+  document.getElementById('fc-'+type+'-count').textContent=(s.idx+1)+'/'+data.length;
+  document.getElementById('fc-'+type).classList.remove('flipped');
+  s.flipped=false;
+  var btn=document.getElementById('fc-'+type+'-known');
+  if(btn){if(s.known.has(s.idx)){btn.classList.add('done');btn.textContent='已掌握 ✓';}else{btn.classList.remove('done');btn.textContent='标记已掌握';}}
+}
+
+function flipCard(type){
+  cardState[type].flipped=!cardState[type].flipped;
+  document.getElementById('fc-'+type).classList.toggle('flipped');
+  if(cardState[type].flipped){
+    var d=getData(type)[cardState[type].idx];
+    var txt=type==='gram'?d.pat:d.jp;
+    speakJa(txt);
+  }
+}
+
+function speakJa(text){
+  try{
+    if(!window.speechSynthesis)return;
+    window.speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang='ja-JP';u.rate=0.9;u.pitch=1.0;u.volume=1.0;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+function navCard(type,dir){
+  var data=getData(type);
+  var s=cardState[type];
+  s.idx=Math.max(0,Math.min(data.length-1,s.idx+dir));
+  renderCard(type);
+}
+
+function markKnown(type){
+  cardState[type].known.add(cardState[type].idx);
+  renderCard(type);
+}
+
+// === 題目渲染 ===
+function renderQuestions(containerId,qData,hasScene){
+  var h='';
+  qData.forEach(function(q,i){
+    var sceneHtml=hasScene&&q.scene?'<div style="font-size:12px;color:var(--teal);margin-bottom:6px;font-weight:600">【'+q.scene+'】</div>':'';
+    h+='<div class="q" id="'+containerId+'-'+i+'">';
+    h+='<div class="q-text">'+sceneHtml+'<span class="speaker">Q'+(i+1)+'.</span> '+q.q+'</div>';
+    h+='<div class="q-opts">';
+    q.opts.forEach(function(opt,j){h+='<div class="q-opt" onclick="selectOpt(\''+containerId+'\','+i+','+j+','+q.ans+')"><span class="lbl">'+(j+1)+'</span><span>'+opt+'</span></div>';});
+    h+='</div>';
+    h+='<button class="q-btn" onclick="revealAns(\''+containerId+'\','+i+','+q.ans+')">显示正解</button>';
+    h+='<div class="q-reveal" id="'+containerId+'-rev-'+i+'"><div class="ans">正解：'+q.opts[q.ans-1]+'</div><div class="exp">'+q.exp+'</div></div>';
+    h+='</div>';
+  });
+  document.getElementById(containerId).innerHTML=h;
+}
+
+function selectOpt(cid,qi,oi,ans){
+  var q=document.getElementById(cid+'-'+qi);
+  if(q.classList.contains('answered'))return;
+  q.classList.add('answered');
+  var opts=q.querySelectorAll('.q-opt');
+  opts.forEach(function(o,j){
+    o.classList.add('disabled');
+    if(j===oi){o.classList.add('selected');if(j===ans-1)o.classList.add('correct');else o.classList.add('wrong');}
+    if(j===ans-1&&j!==oi)o.classList.add('correct');
+  });
+}
+
+function revealAns(cid,qi,ans){
+  var r=document.getElementById(cid+'-rev-'+qi);
+  r.classList.add('show');
+  var q=document.getElementById(cid+'-'+qi);
+  if(!q.classList.contains('answered')){
+    q.classList.add('answered');
+    var opts=q.querySelectorAll('.q-opt');
+    opts.forEach(function(o,j){o.classList.add('disabled');if(j===ans-1)o.classList.add('correct');});
+  }
+}
+
+// === 模擬聴力（带语音播报） ===
+function renderListen(){
+  var h='';
+  listenData.forEach(function(q,i){
+    h+='<div class="q" id="listen-'+i+'">';
+    h+='<div class="q-text"><span class="speaker">応答'+(i+1)+'.</span></div>';
+    h+='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">';
+    h+='<button class="play-btn" id="play-'+i+'" onclick="playListen('+i+')" style="margin:0">▶ 播放语音</button>';
+    h+='<button class="vm-btn" onclick="toggleScript('+i+')">原文</button>';
+    h+='</div>';
+    h+='<div class="listen-script" id="lscript-'+i+'" style="display:none;background:rgba(0,0,0,.25);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:10px;border:1px solid var(--border);color:var(--teal)">'+q.audio+'</div>';
+    h+='<div class="q-opts">';
+    q.opts.forEach(function(opt,j){h+='<div class="q-opt" onclick="selectOpt(\'listen\','+i+','+j+','+q.ans+')"><span class="lbl">'+(j+1)+'</span><span>'+opt+'</span></div>';});
+    h+='</div>';
+    h+='<button class="q-btn" onclick="revealAns(\'listen\','+i+','+q.ans+')">显示正解</button>';
+    h+='<div class="q-reveal" id="listen-rev-'+i+'"><div class="ans">正解：'+q.opts[q.ans-1]+'</div><div class="exp">'+q.exp+'</div></div>';
+    h+='</div>';
+  });
+  document.getElementById('listenList').innerHTML=h;
+}
+
+function toggleScript(i){
+  var el=document.getElementById('lscript-'+i);
+  if(el.style.display==='none'){el.style.display='block';}else{el.style.display='none';}
+}
+
+function playListen(idx){
+  var text=listenData[idx].audio;
+  var btn=document.getElementById('play-'+idx);
+  if(!window.speechSynthesis){
+    alert('此浏览器不支持语音合成。可以点「原文」按钮查看文字。');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);
+  u.lang='ja-JP';
+  u.rate=0.95;
+  u.pitch=1.0;
+  u.volume=1.0;
+  btn.classList.add('playing');
+  btn.textContent='▶ 播放中...';
+  u.onend=function(){btn.classList.remove('playing');btn.textContent='▶ 播放语音';};
+  u.onerror=function(){
+    btn.classList.remove('playing');btn.textContent='▶ 播放语音';
+    // 尝试显示原文作为兜底
+    document.getElementById('lscript-'+idx).style.display='block';
+  };
+  try{window.speechSynthesis.speak(u);}
+  catch(e){
+    btn.classList.remove('playing');btn.textContent='▶ 播放语音';
+    document.getElementById('lscript-'+idx).style.display='block';
+  }
+}
+
+// === 模擬読解 ===
+function renderRead(){
+  var h='';
+  readData.forEach(function(q,i){
+    h+='<div class="q" id="read-'+i+'">';
+    h+='<div class="passage">'+q.passage+'</div>';
+    h+='<div class="q-text"><span class="speaker">読解'+(i+1)+'.</span> '+q.q+'</div>';
+    h+='<div class="q-opts">';
+    q.opts.forEach(function(opt,j){h+='<div class="q-opt" onclick="selectOpt(\'read\','+i+','+j+','+q.ans+')"><span class="lbl">'+(j+1)+'</span><span>'+opt+'</span></div>';});
+    h+='</div>';
+    h+='<button class="q-btn" onclick="revealAns(\'read\','+i+','+q.ans+')">显示正解</button>';
+    h+='<div class="q-reveal" id="read-rev-'+i+'"><div class="ans">正解：'+q.opts[q.ans-1]+'</div><div class="exp">'+q.exp+'</div></div>';
+    h+='</div>';
+  });
+  document.getElementById('readList').innerHTML=h;
+}
+
+// === 記述 ===
+function renderWriteA(){
+  var h='';
+  writeAData.forEach(function(q,i){
+    h+='<div class="q" id="writA-'+i+'">';
+    h+='<div class="q-text"><span class="speaker">記述A'+(i+1)+'.</span> '+q.q+'</div>';
+    h+='<button class="q-btn" onclick="document.getElementById(\'writA-rev-'+i+'\').classList.add(\'show\')">显示正解</button>';
+    h+='<div class="q-reveal" id="writA-rev-'+i+'"><div class="ans">(A) '+q.a+'　(B) '+q.b+'</div><div class="exp">'+q.exp+'</div></div>';
+    h+='</div>';
+  });
+  document.getElementById('writeAList').innerHTML=h;
+}
+
+function renderWriteB(){
+  var h='';
+  writeBData.forEach(function(q,i){
+    h+='<div class="q" id="writB-'+i+'">';
+    h+='<div class="q-text"><span class="speaker">記述B'+(i+1)+'.</span> '+q.q+'</div>';
+    h+='<button class="q-btn" onclick="document.getElementById(\'writB-rev-'+i+'\').classList.add(\'show\')">显示正解</button>';
+    h+='<div class="q-reveal" id="writB-rev-'+i+'"><div class="ans">'+q.ans+'</div><div class="exp">'+q.exp+'</div></div>';
+    h+='</div>';
+  });
+  document.getElementById('writeBList').innerHTML=h;
+}
+
+// === Tabs ===
+function setupTabs(tabId,items){
+  var h='';
+  items.forEach(function(it,i){h+='<div class="tab'+(i===0?' on':'')+'" onclick="switchTab(\''+tabId+'\','+(i+1)+','+items.length+')">'+it+'</div>';});
+  document.getElementById(tabId).innerHTML=h;
+}
+
+function switchTab(tabId,n,total){
+  for(var i=1;i<=total;i++)document.querySelector('#'+tabId+' .tab:nth-child('+i+')').classList.remove('on');
+  document.querySelector('#'+tabId+' .tab:nth-child('+n+')').classList.add('on');
+  var prefix=tabId.replace('tab','');
+  for(var i=1;i<=total;i++)document.getElementById('tc'+prefix+'-'+i).classList.remove('on');
+  document.getElementById('tc'+prefix+'-'+n).classList.add('on');
+}
+
+// === Module toggle ===
+function toggleMod(n){
+  document.getElementById('mb'+n).classList.toggle('open');
+  document.getElementById('ch'+n).classList.toggle('open');
+}
+
+// === Progress ===
+var totalC=13;
+function upd(){
+  var d=0;
+  for(var i=1;i<=totalC;i++){var c=document.getElementById('c'+i);if(c&&c.checked)d++;}
+  var p=Math.round(d/totalC*100);
+  document.getElementById('progTxt').textContent=d+'/'+totalC;
+  document.getElementById('progFill').style.width=p+'%';
+}
+
+// === Timer ===
+var tmrInt=null,tmrSec=0,tmrRun=false;
+function fmtT(s){var h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0');}
+function toggleTmr(){
+  var btn=document.getElementById('tmrBtn');
+  if(tmrRun){clearInterval(tmrInt);tmrRun=false;btn.textContent='继续';btn.className='btn go';}
+  else{tmrInt=setInterval(function(){tmrSec++;document.getElementById('tmrD').textContent=fmtT(tmrSec);},1000);tmrRun=true;btn.textContent='暂停';btn.className='btn stop';}
+}
+function resetTmr(){clearInterval(tmrInt);tmrRun=false;tmrSec=0;document.getElementById('tmrD').textContent='00:00:00';var b=document.getElementById('tmrBtn');b.textContent='开始';b.className='btn go';}
+
+// === 词汇今日/历史切换 ===
+function switchVocabMode(mode){
+  vocabMode=mode;
+  var btnT=document.getElementById('vmToday'),btnH=document.getElementById('vmHist');
+  var viewT=document.getElementById('vocabTodayView'),viewH=document.getElementById('vocabHistView');
+  if(mode==='today'){
+    btnT.classList.add('on');btnH.classList.remove('on');viewT.style.display='block';viewH.style.display='none';
+    vocabData=dailyVocab;cardState.vocab.idx=0;cardState.vocab.known=new Set();
+    renderCard('vocab');
+  }else if(mode==='history'){
+    btnT.classList.remove('on');btnH.classList.add('on');viewT.style.display='none';viewH.style.display='block';
+    renderHistoryList();
+  }
+}
+function renderHistoryList(){
+  var hist=getHistoryList();
+  var keys=Object.keys(hist).sort().reverse();
+  var todayKey=getDateKey();
+  var h='';
+  if(keys.length===0){
+    h='<div style="text-align:center;color:var(--faint);font-size:13px;padding:20px">暂无历史记录（每天打开页面自动保存）</div>';
+  }else{
+    keys.forEach(function(key){
+      if(key===todayKey)return;
+      var info=hist[key];
+      h+='<div class="h-item" onclick="viewHistoryDay(\''+key+'\','+info.offset+')">';
+      h+='<div class="h-date">'+key+'</div><div class="h-cnt">30词</div>';
+      h+='</div>';
+    });
+    if(keys.filter(function(k){return k!==todayKey;}).length===0){
+      h='<div style="text-align:center;color:var(--faint);font-size:13px;padding:20px">今天是第一天，还没有历史记录</div>';
+    }
+  }
+  var backBtn='<div class="h-back"><button class="fc-btn prev" style="width:100%" onclick="switchVocabMode(\'today\')">返回今日词汇</button></div>';
+  document.getElementById('vocabHistList').innerHTML=h+backBtn;
+}
+function viewHistoryDay(dateStr,offset){
+  var histListHtml='<div style="margin-bottom:10px;font-size:13px;color:var(--accent);font-weight:600">'+dateStr+' 的30词</div>';
+  histListHtml+='<div class="h-back"><button class="fc-btn prev" style="width:100%;margin-bottom:12px" onclick="switchVocabMode(\'history\')">← 返回历史列表</button></div>';
+  var words=getHistoryVocab(offset);
+  words.forEach(function(w,i){
+    histListHtml+='<div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:8px 0">';
+    histListHtml+='<div style="font-size:16px;font-weight:700;color:var(--accent)">'+w.jp+'</div>';
+    if(w.rd!=='ー')histListHtml+='<div style="font-size:12px;color:var(--teal);margin-top:2px">'+w.rd+'</div>';
+    histListHtml+='<div style="font-size:12px;color:var(--text);margin-top:6px;padding:6px 8px;background:rgba(0,0,0,.2);border-radius:6px;line-height:1.6">'+w.jdef+'</div>';
+    histListHtml+='<div style="font-size:12px;color:var(--dim);margin-top:6px">'+w.ex+'</div>';
+    histListHtml+='</div>';
+  });
+  document.getElementById('vocabHistView').innerHTML=histListHtml;
+}
+
+// === Init ===
+renderCard('vocab');
+document.getElementById('vmDate').textContent=getDateKey()+' 第'+(getDayOffset()+1)+'天';
+renderCard('idiom');
+renderCard('kanji');
+renderCard('gram');
+renderQuestions('orderList',orderData,false);
+renderQuestions('keigoList',keigoData,true);
+renderListen();
+renderRead();
+renderWriteA();
+renderWriteB();
+setupTabs('tab1',['词汇','惯用句','汉字']);
+setupTabs('tab2',['语法卡片','排序','敬語']);
+setupTabs('tab3',['模擬応答','精听策略','泛听']);
+setupTabs('tab4',['模擬読解','記述題','商务模板']);
+document.getElementById('mb1').classList.add('open');
+document.getElementById('ch1').classList.add('open');
+</script>
+</body>
+</html>
