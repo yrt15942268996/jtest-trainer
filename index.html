@@ -726,21 +726,20 @@ function speakJa(text){
 }
 
 function speakJaCloud(text){
-  // 尝试 Google Translate TTS（通过 Audio 元素，不受 CORS 限制）
-  var url='https://translate.google.com/translate_tts?ie=UTF-8&q='+encodeURIComponent(text)+'&tl=ja&client=tw-ob';
+  // 有道词典TTS（国内可访问）
+  var url='https://dict.youdao.com/dictvoice?audio='+encodeURIComponent(text)+'&type=2';
   var audio=new Audio(url);
-
   audio.oncanplay=function(){
     audio.play().catch(function(){});
   };
   audio.onerror=function(){
-    // Google 被墙？试试备用方案
-    var url2='https://fanyi.baidu.com/gettts?lan=ja&text='+encodeURIComponent(text)+'&spd=3&source=web';
+    // 有道失败→Google兜底
+    var url2='https://translate.google.com/translate_tts?ie=UTF-8&q='+encodeURIComponent(text)+'&tl=ja&client=tw-ob';
     var audio2=new Audio(url2);
     audio2.oncanplay=function(){audio2.play().catch(function(){});};
     audio2.onerror=function(){
-      // 都不行，提示用户
-      alert('设备没有日语语音包，且云端TTS无法访问。\n\n请安装日语语音：\niPhone：设置→通用→键盘→添加日文键盘\n安卓：设置→语言→文字转语音→安装日语语音');
+      // 静默失败，不弹窗
+      console.log('TTS全部失败');
     };
     audio2.load();
   };
