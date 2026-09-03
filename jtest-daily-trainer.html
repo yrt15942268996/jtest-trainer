@@ -149,7 +149,7 @@ body{font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;b
 <div class="hd">
   <h1>J.TEST 特A 930+ 每日全科训练台</h1>
   <div class="sub">每天2.5-3h 全科混练 直击特A提分点</div>
-  <div class="badges"><span class="bg y">现B级→目标特A930+</span><span class="bg g" id="dateBg"></span></div>
+  <div class="badges"><span class="bg y">现B级→目标特A930+</span><span class="bg g" id="dateBg"></span><span class="bg b" style="cursor:pointer" onclick="testVoice()">🔊测试语音</span></div>
 </div>
 <div class="prog">
   <div class="prog-row"><span>今日完成</span><span id="progTxt">0/13</span></div>
@@ -660,14 +660,72 @@ function flipCard(type){
   }
 }
 
+var _jaVoice=null;
+var _voicesReady=false;
+function loadJaVoice(){
+  if(!window.speechSynthesis)return;
+  var voices=window.speechSynthesis.getVoices();
+  if(voices.length===0)return;
+  _voicesReady=true;
+  for(var i=0;i<voices.length;i++){
+    var v=voices[i];
+    if(v.lang==='ja-JP'||v.lang.indexOf('ja')===0){
+      _jaVoice=v;break;
+    }
+  }
+  if(!_jaVoice){
+    for(var i=0;i<voices.length;i++){
+      if(voices[i].lang.indexOf('ja')===0){_jaVoice=voices[i];break;}
+    }
+  }
+}
+if(window.speechSynthesis){
+  loadJaVoice();
+  window.speechSynthesis.onvoiceschanged=function(){loadJaVoice();};
+}
+
+function testVoice(){
+  if(!window.speechSynthesis){
+    alert('浏览器不支持语音合成（SpeechSynthesis API不可用）');
+    return;
+  }
+  var voices=window.speechSynthesis.getVoices();
+  var jaVoices=voices.filter(function(v){return v.lang.indexOf('ja')===0;});
+  var msg='语音引擎：'+(window.speechSynthesis?'可用':'不可用')+'\n';
+  msg+='总语音数：'+voices.length+'\n';
+  msg+='日语语音数：'+jaVoices.length+'\n';
+  if(jaVoices.length>0){
+    msg+='\n日语语音列表：\n';
+    jaVoices.forEach(function(v){msg+='・'+v.name+' ('+v.lang+')\n';});
+  }
+  msg+='\n点击「确定」测试播放日语...';
+  alert(msg);
+  // 尝试播放
+  speakJa('こんにちは。テストです。');
+}
+
 function speakJa(text){
   try{
-    if(!window.speechSynthesis)return;
+    if(!window.speechSynthesis){
+      alert('このブラウザは音声合成に対応していません。\n（此浏览器不支持语音合成）');
+      return;
+    }
     window.speechSynthesis.cancel();
     var u=new SpeechSynthesisUtterance(text);
     u.lang='ja-JP';u.rate=0.9;u.pitch=1.0;u.volume=1.0;
+    if(_jaVoice){u.voice=_jaVoice;}
+    else if(!_voicesReady){
+      // voices还没加载完，再试一次
+      loadJaVoice();
+      if(_jaVoice){u.voice=_jaVoice;}
+    }
+    u.onerror=function(e){
+      console.log('speech error:',e);
+    };
     window.speechSynthesis.speak(u);
-  }catch(e){}
+  }catch(e){
+    alert('音声再生エラー：'+e.message);
+  }
 }
 
 function navCard(type,dir){
