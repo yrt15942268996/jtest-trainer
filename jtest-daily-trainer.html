@@ -640,7 +640,7 @@ function renderCard(type){
   if(type==='gram'){
     back='<div class="jp">'+d.pat+'</div><div class="cn" style="margin-top:8px;font-size:14px;color:var(--accent)">'+d.mean+'</div><div class="ex" style="margin-top:10px">'+d.ex+'</div><div class="exCn">'+d.exCn+'</div><div class="note">'+d.note+'</div>';
   }else{
-    back='<div class="jp">'+d.jp+'</div><div class="rd">'+d.rd+'</div><div class="jdef">'+d.jdef+'</div><div class="ex">'+d.ex+'</div>';
+    back='<div class="jp">'+d.jp+'</div><div class="rd">'+d.rd+'</div><div class="jdef" style="cursor:pointer;position:relative;padding-right:28px" onclick="event.stopPropagation();speakJa(this.getAttribute(\'data-text\'))" data-text="'+d.jdef.replace(/"/g,'&quot;')+'"><span style="position:absolute;right:0;top:0;font-size:14px;color:var(--teal)">▶</span>'+d.jdef+'</div><div class="ex" style="cursor:pointer;position:relative;padding-right:28px" onclick="event.stopPropagation();speakJa(this.getAttribute(\'data-text\'))" data-text="'+d.ex.replace(/"/g,'&quot;')+'"><span style="position:absolute;right:0;top:0;font-size:14px;color:var(--teal)">▶</span>'+d.ex+'</div>';
   }
   document.getElementById('fc-'+type+'-back').innerHTML=back;
   document.getElementById('fc-'+type+'-count').textContent=(s.idx+1)+'/'+data.length;
